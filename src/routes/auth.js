@@ -78,11 +78,12 @@ router.get(
 router.get(
   "/auth/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "/",
-    successRedirect: "/profile",
-    failureFlash: true,
-    successFlash: "Successfully logged in!",
-  })
+    failureRedirect: "/sign-in",
+    failureMessage: true,
+  }),
+  function (req, res) {
+    res.redirect("/");
+  }
 );
 
 router.get(
@@ -94,8 +95,10 @@ router.get(
 router.get(
   "/auth/facebook/callback",
   passport.authenticate("facebook", {
-    successRedirect: "/profile",
-    failureRedirect: "/error",
+    // successRedirect: "http://localhost:5173/dashboard",
+    // failureRedirect: "http://localhost:5173/sign-up",
+    failureFlash: true,
+    successFlash: "Successfully logged in!",
   })
 );
 function isLoggedIn(req, res, next) {

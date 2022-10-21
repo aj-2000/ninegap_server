@@ -26,7 +26,6 @@ const signup = async (req, res) => {
       .json({ errors: ["the user with this email already exists"] });
   } catch (error) {
     console.error(error);
-
     return res.status(500).json({ errors: ["some error occured"] });
   }
 };
@@ -41,6 +40,7 @@ const logout = (req, res) => {
 };
 
 const me = async (req, res) => {
+  console.log(req)
   if (!req.user)
     return res.status(403).json({ errors: ["login to get the info"] });
   const user = await User.findOne({ email: req.user.email });

@@ -9,7 +9,14 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const FacebookStrategy = require("passport-facebook").Strategy;
 const User = require("../models/User");
 
-const addGoogleUser = ({ id, email, firstName, lastName, profilePhoto, source }) => {
+const addGoogleUser = ({
+  id,
+  email,
+  firstName,
+  lastName,
+  profilePhoto,
+  source,
+}) => {
   const user = new User({
     id,
     email,
@@ -17,7 +24,7 @@ const addGoogleUser = ({ id, email, firstName, lastName, profilePhoto, source })
     lastName,
     profilePhoto,
     source,
-    password: ""
+    password: "",
   });
   return user.save();
 };
@@ -30,21 +37,12 @@ const getUserByEmail = async ({ email }) => {
   return await User.findOne({ email });
 };
 
-passport.serializeUser((user, done) => {
-  done(null, user._id);
+passport.serializeUser(function (user, cb) {
+  cb(null, user);
 });
 
-passport.deserializeUser(async (id, done) => {
-  try {
-    let user = await User.findById(id, "name email");
-
-    if (!user) return done(new Error("user not found"));
-
-    return done(null, user);
-  } catch (error) {
-    console.error(error);
-    done(error);
-  }
+passport.deserializeUser(function (obj, cb) {
+  cb(null, obj);
 });
 
 passport.use(
@@ -67,6 +65,7 @@ passport.use(
     }
   )
 );
+
 passport.use(
   new GoogleStrategy(
     {

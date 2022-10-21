@@ -14,30 +14,31 @@ const flash = require("express-flash");
 const app = express();
 app.use(
   cors({
-    origin: "*",
+    origin: ["http://127.0.0.1:5173", "http://localhost:5173"], // allow to server to accept request from different origin
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true, // allow session cookie from browser to pass through
   })
 );
+app.use(express.static(__dirname + "/public"));
 app.use(flash());
 app.use(express.json());
+app.use(cookieParser());
 app.use(
   session({
     secret: SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false },
     store: MongoStore.create({
       mongoUrl: MONGO_URI,
     }),
   })
 );
-app.use(cookieParser());
 app.use(passport.initialize());
 app.use(passport.session());
-
 app.use("/", AuthRoute);
 
 app.engine("html", require("ejs").renderFile);
-app.use(express.static(__dirname + "/public"));
+
 app.get("/", (req, res) => {
   res.render("index.ejs");
 });
